@@ -33,8 +33,8 @@ public class AccountService {
         }
 
         // Prevent users from registering themselves as ADMIN
-        if (request.getRole() == Role.ADMIN) {
-            throw new com.ridelink.accountservice.exception.ForbiddenAccessException("Admin registration is not allowed");
+       if (request.getRole() == Role.ADMIN) {
+       throw new com.ridelink.accountservice.exception.ForbiddenAccessException("Admin registration is not allowed");
         }
 
         LocalDateTime now = LocalDateTime.now();
@@ -80,7 +80,15 @@ public class AccountService {
                 java.util.Collections.singletonList(new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_" + user.getRole().name()))
         );
 
-        String jwtToken = jwtService.generateToken(userDetails);
+        java.util.Map<String, Object> extraClaims = new java.util.HashMap<>();
+        extraClaims.put("id", user.getId());
+        extraClaims.put("accountId", user.getId());
+        extraClaims.put("userId", user.getId());
+        extraClaims.put("role", user.getRole().name());
+        extraClaims.put("roles", java.util.Collections.singletonList("ROLE_" + user.getRole().name()));
+        extraClaims.put("email", user.getEmail());
+
+        String jwtToken = jwtService.generateToken(extraClaims, userDetails);
         
         return new com.ridelink.accountservice.dto.JwtResponse(jwtToken);
     }
@@ -88,6 +96,11 @@ public class AccountService {
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new com.ridelink.accountservice.exception.UserNotFoundException("User not found with email: " + email));
+    }
+
+    public User getUserById(String id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new com.ridelink.accountservice.exception.UserNotFoundException("User not found with ID: " + id));
     }
 
     public User updateProfile(String email, com.ridelink.accountservice.dto.UpdateProfileRequest request) {

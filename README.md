@@ -76,7 +76,7 @@ Suspended accounts are prevented from successfully authenticating.
 
 Before running the project, ensure the following are installed:
 
-- JDK 21
+- JDK 25
 - MongoDB
 - Git
 - Maven or the included Maven Wrapper
@@ -180,7 +180,7 @@ For a local MongoDB installation, verify that the MongoDB service is running.
 The service runs by default on:
 
 ```text
-http://localhost:8080
+http://localhost:8081
 ```
 
 ---
@@ -192,13 +192,13 @@ Swagger/OpenAPI documentation is available while the application is running.
 ### Swagger UI
 
 ```text
-http://localhost:8080/swagger-ui.html
+http://localhost:8081/swagger-ui.html
 ```
 
 ### OpenAPI JSON
 
 ```text
-http://localhost:8080/v3/api-docs
+http://localhost:8081/v3/api-docs
 ```
 
 Swagger can be used to inspect the Account Service REST API endpoints and request/response structures.

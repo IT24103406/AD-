@@ -1,19 +1,28 @@
 package com.ridelink.accountservice.controller;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.ridelink.accountservice.dto.RoleUpdateRequest;
 import com.ridelink.accountservice.dto.StatusUpdateRequest;
 import com.ridelink.accountservice.dto.UpdateProfileRequest;
 import com.ridelink.accountservice.dto.UserResponse;
 import com.ridelink.accountservice.model.User;
 import com.ridelink.accountservice.service.AccountService;
+
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
+@SecurityRequirement(name = "bearerAuth")
 public class UserController {
 
     private final AccountService accountService;
@@ -26,6 +35,12 @@ public class UserController {
     public ResponseEntity<UserResponse> getMyProfile(Authentication authentication) {
         String email = authentication.getName();
         User user = accountService.getUserByEmail(email);
+        return ResponseEntity.ok(mapToResponse(user));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UserResponse> getUserById(@PathVariable String id) {
+        User user = accountService.getUserById(id);
         return ResponseEntity.ok(mapToResponse(user));
     }
 
